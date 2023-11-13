@@ -29,6 +29,8 @@ func SecondMiddleware() gin.HandlerFunc {
 }
 
 func main() {
+	//當要release的時候，可以加這行提昇效率！！
+	gin.SetMode(gin.ReleaseMode)
 	//use default middleware
 	r := gin.Default()
 	/*
