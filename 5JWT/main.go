@@ -3,10 +3,17 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+)
+
+// 定義角色
+const (
+	RoleAdmin = "admin"
+	RoleUser  = "user"
 )
 
 // 存在server的秘密字串，用來最後產生signature用的
@@ -14,6 +21,7 @@ var jwtSecret = []byte("secret")
 
 type MyClaims struct {
 	UserID string `json:"userID"`
+	Role   string `json:"role"`
 	jwt.StandardClaims
 }
 
@@ -21,9 +29,11 @@ type MyClaims struct {
 func generateToken(userID string) string {
 	claims := MyClaims{
 		userID,
+		//這邊在生成的時候塞入角色
+		RoleUser,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
-			Issuer:    "Flynn",
+			Issuer:    "HAHA",
 		},
 	}
 	//這邊注意signingMethod是SigningMethodHS256 不是 SigningMethodES256
@@ -35,8 +45,15 @@ func generateToken(userID string) string {
 }
 
 func authenticate(c *gin.Context) {
-	tokenString := c.GetHeader("Authorization")
+	auth := c.GetHeader("Authorization")
+	tokenString := strings.Split(auth, "Bearer ")[1]
+	if auth == "" {
+		c.String(http.StatusForbidden, "No Authorization header provided")
+		c.Abort()
+		return
+	}
 
+	//去檢查整個token的完整性
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return jwtSecret, nil
 	})
@@ -49,6 +66,12 @@ func authenticate(c *gin.Context) {
 
 	claims := token.Claims.(jwt.MapClaims)
 	userID := claims["userID"].(string)
+	role := claims["role"].(string)
+	//確認角色是誰才能call相對應的api
+	if role != RoleAdmin {
+		c.AbortWithStatus(http.StatusForbidden)
+		return
+	}
 
 	c.Set("userID", userID)
 }
