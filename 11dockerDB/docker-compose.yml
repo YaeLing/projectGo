@@ -1,0 +1,21 @@
+services:
+  mongo: #service的名字
+    image: mongo
+    volumes:
+      - "./data/db:/data/db"
+      - "./data/log:/data/log"
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME} #mongodb的帳號密碼
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+    command: --dbpath /data/db --logpath /data/log/dblog.log
+  webAPI:
+    image: go-mongo
+    ports:
+      - "8080:8080"
+    environment:
+      - MONGODB_URI=mongodb://${MONGO_ROOT_USERNAME}:${MONGO_ROOT_PASSWORD}@mongo:27017 #這邊注意地址是放service的名字不是localhost了
+    depends_on:
+      - mongo
+    restart: on-failure

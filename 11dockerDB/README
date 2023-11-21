@@ -1,0 +1,4 @@
+參考
+https://zhuanlan.zhihu.com/p/144308830
+docker build -t go-mongo . --no-cache(會刪掉之前build)
+docker-compose -f .\docker-compose.yml --env-file .env<環境變數的config> up --build<這個tag會重build>
