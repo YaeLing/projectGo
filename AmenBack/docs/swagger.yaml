@@ -1,0 +1,328 @@
+definitions:
+  apiModel.RequestRegisterUser:
+    description: User register information with acoount and user info
+    properties:
+      account:
+        description: this is account
+        type: string
+      name:
+        description: this is user name
+        type: string
+      password:
+        description: this is user password
+        type: string
+      phone:
+        description: this is user phone
+        type: string
+    type: object
+  apiModel.RequestUpdateUserAccount:
+    description: Update user account
+    properties:
+      account:
+        description: this is account
+        type: string
+      password:
+        description: this is user password
+        type: string
+    type: object
+  apiModel.RequestUpdateUserInfo:
+    description: Update user information
+    properties:
+      name:
+        description: this is user name
+        type: string
+      phone:
+        description: this is user phone
+        type: string
+    type: object
+  apiModel.RequestUpdateUserRole:
+    properties:
+      id:
+        type: string
+      role:
+        type: string
+    type: object
+  apiModel.ResponseUserAccount:
+    description: Response of user account
+    properties:
+      account:
+        description: this is account
+        type: string
+      password:
+        description: this is user password
+        type: string
+      role:
+        description: this is user role
+        type: string
+    type: object
+  apiModel.ResponseUserInfo:
+    description: Response of user information
+    properties:
+      name:
+        description: this is user name
+        type: string
+      phone:
+        description: this is user phone
+        type: string
+    type: object
+  apiModel.ResponseUserInfos:
+    description: Response of multiple user informations
+    properties:
+      userInfos:
+        items:
+          $ref: '#/definitions/apiModel.ResponseUserInfo'
+        type: array
+    type: object
+info:
+  contact: {}
+paths:
+  /admin/profile/{key}/{value}:
+    get:
+      description: Admin query user profiles
+      parameters:
+      - description: Query key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: Query value
+        in: path
+        name: value
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Query user profile failed
+          schema:
+            type: string
+      summary: Admin query user profiles
+      tags:
+      - Admin
+  /admin/role:
+    put:
+      consumes:
+      - application/json
+      description: Admin update user role
+      parameters:
+      - description: User role
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/apiModel.RequestUpdateUserRole'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Update user role failed
+          schema:
+            type: string
+      summary: Admin update user role
+      tags:
+      - Admin
+  /auth/{id}:
+    get:
+      description: Generate JWT Token
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Token string
+          schema:
+            type: string
+        "404":
+          description: User not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Generate JWT Token
+      tags:
+      - Authenticate
+  /profile/{userID}:
+    delete:
+      description: Admin delete user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Delete user profile failed
+          schema:
+            type: string
+      summary: Admin delete user
+      tags:
+      - Admin
+  /user:
+    delete:
+      description: Delete user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Delete user self profile failed
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Delete user
+      tags:
+      - User
+  /user/account:
+    get:
+      description: Query user self account
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User account
+          schema:
+            $ref: '#/definitions/apiModel.ResponseUserAccount'
+        "404":
+          description: User account not found
+          schema:
+            type: string
+      summary: Query self account
+      tags:
+      - User
+    put:
+      consumes:
+      - application/json
+      description: Update user self account
+      parameters:
+      - description: User account
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/apiModel.RequestUpdateUserAccount'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Update user self account failed
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Update user self account
+      tags:
+      - User
+  /user/info:
+    put:
+      consumes:
+      - application/json
+      description: Update user self information
+      parameters:
+      - description: User info
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/apiModel.RequestUpdateUserInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Update user self information failed
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Update user self info
+      tags:
+      - User
+  /user/info/{key}/{value}:
+    get:
+      description: Query user informations by key
+      parameters:
+      - description: Query key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: Query value
+        in: path
+        name: value
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User informations
+          schema:
+            $ref: '#/definitions/apiModel.ResponseUserInfos'
+        "404":
+          description: User informations not found
+          schema:
+            type: string
+      summary: Query user info
+      tags:
+      - User
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      description: Register user
+      parameters:
+      - description: User info
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/apiModel.RequestRegisterUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Register failed
+          schema:
+            type: string
+      summary: Register
+      tags:
+      - User
+swagger: "2.0"
