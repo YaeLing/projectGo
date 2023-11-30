@@ -24,7 +24,7 @@ func QueryUserProfilesAPI(ctx *gin.Context) {
 		ctx.String(http.StatusNotFound, err.Error())
 		return
 	} else {
-		ctx.JSON(http.StatusAccepted, result)
+		ctx.JSON(http.StatusOK, result)
 		return
 	}
 }
@@ -49,7 +49,7 @@ func UpdateUserRoleAPI(ctx *gin.Context) {
 		ctx.String(http.StatusBadRequest, err.Error())
 		return
 	} else {
-		ctx.String(http.StatusAccepted, "OK")
+		ctx.String(http.StatusOK, "OK")
 		return
 	}
 }
@@ -68,7 +68,7 @@ func DeleteUserProfileAPI(ctx *gin.Context) {
 		ctx.String(http.StatusBadRequest, err.Error())
 		return
 	} else {
-		ctx.String(http.StatusAccepted, "OK")
+		ctx.String(http.StatusOK, "OK")
 		return
 	}
 }

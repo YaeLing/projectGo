@@ -4,7 +4,9 @@ import (
 	auth "amenBack/authenticate"
 	"amenBack/service/adminService"
 	"amenBack/service/userService"
+	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
 	_ "amenBack/docs"
@@ -19,15 +21,26 @@ func main() {
 }
 
 func setupRoute() *gin.Engine {
+	// gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 
 	router.GET("/auth/:userID", auth.GenerateToken)
-	router.POST("/register", userService.RegisterAPI)
+
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+		AllowHeaders:     []string{"Authorization", "Content-Type"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
 	userRouter := router.Group("/user")
+	userRouter.POST("/register", userService.RegisterAPI)
 	userRouter.Use(auth.Authenticate)
 	{
 		userRouter.GET("/info/:key/:value", userService.QueryUserInfosAPI)
+		userRouter.GET("/info", userService.QuerySelfInfosAPI)
 		userRouter.PUT("/info", userService.UpdateSelfInfoAPI)
 
 		userRouter.GET("/account", userService.QuerySelfAccountAPI)

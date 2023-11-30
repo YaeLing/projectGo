@@ -34,15 +34,14 @@ func GetUserProfiles(key string, value string) ([]model.UserProfile, error) {
 		profiles []model.UserProfile
 		filter   bson.M
 	)
-	if key == "_id" {
+	if key == "id" {
 		ObjectID, err := primitive.ObjectIDFromHex(value)
 		if err != nil {
-			log.Println("Get user account through _id failed")
+			log.Println("Get user account through id failed")
 			return profiles, err
 		}
-		filter = bson.M{key: ObjectID}
+		filter = bson.M{"_id": ObjectID}
 	} else {
-		key = "Account." + key
 		filter = bson.M{key: value}
 	}
 	if cursor, err = coll.Find(context.TODO(), filter); err != nil {
@@ -69,13 +68,13 @@ func GetUserAccounts(key string, value string) ([]model.UserAccount, error) {
 		userAccounts []model.UserAccount
 		filter       bson.M
 	)
-	if key == "_id" {
+	if key == "id" {
 		ObjectID, err := primitive.ObjectIDFromHex(value)
 		if err != nil {
-			log.Println("Get user account through _id failed")
+			log.Println("Get user account through id failed")
 			return userAccounts, err
 		}
-		filter = bson.M{key: ObjectID}
+		filter = bson.M{"_id": ObjectID}
 	} else {
 		key = "Account." + key
 		filter = bson.M{key: value}
@@ -107,13 +106,13 @@ func GetUserInfos(key string, value string) ([]model.UserInfo, error) {
 		userInfos []model.UserInfo
 		filter    bson.M
 	)
-	if key == "_id" {
+	if key == "id" {
 		ObjectID, err := primitive.ObjectIDFromHex(value)
 		if err != nil {
-			log.Println("Get user account through _id failed")
+			log.Println("Get user account through id failed")
 			return userInfos, err
 		}
-		filter = bson.M{key: ObjectID}
+		filter = bson.M{"_id": ObjectID}
 	} else {
 		key = "Info." + key
 		filter = bson.M{key: value}

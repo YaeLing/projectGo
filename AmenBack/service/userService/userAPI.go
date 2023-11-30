@@ -27,8 +27,34 @@ func RegisterAPI(ctx *gin.Context) {
 		ctx.String(http.StatusBadRequest, err.Error())
 		return
 	} else {
-		ctx.String(http.StatusAccepted, "OK")
+		ctx.String(http.StatusCreated, "OK")
 		return
+	}
+}
+
+// Query user self info api
+// @Summary      Query user self info
+// @Description  Query user self information
+// @Tags         User
+// @Produce      json
+// @Success      200  {object}   apiModel.ResponseUserInfo   "User informations"
+// @Failure      404  string  "User informations not found"
+// @Router       /user/info [GET]
+func QuerySelfInfosAPI(ctx *gin.Context) {
+	if userID := ctx.GetString("userID"); userID == "" {
+		ctx.Status(http.StatusInternalServerError)
+	} else {
+		if infos, err := queryUserInfos("id", userID); err != nil {
+			ctx.String(http.StatusNotFound, err.Error())
+			return
+		} else {
+			if len(infos.UserInfos) == 0 {
+				ctx.AbortWithStatus(http.StatusNotFound)
+			} else {
+				ctx.JSON(http.StatusOK, infos.UserInfos[0])
+			}
+			return
+		}
 	}
 }
 
@@ -49,7 +75,7 @@ func QueryUserInfosAPI(ctx *gin.Context) {
 		ctx.String(http.StatusNotFound, err.Error())
 		return
 	} else {
-		ctx.JSON(http.StatusAccepted, infos)
+		ctx.JSON(http.StatusOK, infos)
 		return
 	}
 }
@@ -70,7 +96,7 @@ func QuerySelfAccountAPI(ctx *gin.Context) {
 			ctx.String(http.StatusNotFound, err.Error())
 			return
 		} else {
-			ctx.JSON(http.StatusAccepted, account)
+			ctx.JSON(http.StatusOK, account)
 			return
 		}
 	}
@@ -100,7 +126,7 @@ func UpdateSelfInfoAPI(ctx *gin.Context) {
 			ctx.String(http.StatusBadRequest, err.Error())
 			return
 		} else {
-			ctx.JSON(http.StatusAccepted, "OK")
+			ctx.JSON(http.StatusOK, "OK")
 			return
 		}
 	}
@@ -130,7 +156,7 @@ func UpdateSelfAccountAPI(ctx *gin.Context) {
 			ctx.String(http.StatusBadRequest, err.Error())
 			return
 		} else {
-			ctx.JSON(http.StatusAccepted, "OK")
+			ctx.JSON(http.StatusOK, "OK")
 			return
 		}
 	}
@@ -153,7 +179,7 @@ func DeleteSelfProfile(ctx *gin.Context) {
 			ctx.String(http.StatusBadRequest, err.Error())
 			return
 		} else {
-			ctx.JSON(http.StatusAccepted, "OK")
+			ctx.JSON(http.StatusOK, "OK")
 			return
 		}
 	}

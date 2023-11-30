@@ -31,10 +31,12 @@ func queryUserProfiles(key string, value string) (apiModel.ResponseUserProfiles,
 		log.Println(errorMsg)
 		return response, errors.New(errorMsg)
 	} else {
-		for index, userProfile := range userProfiles {
-			response.UserProfiles[index].ID = userProfile.ID.Hex()
-			response.UserProfiles[index].Info = apiModel.ResponseUserInfo(userProfile.Info)
-			response.UserProfiles[index].Account = apiModel.ResponseUserAccountNoPass{Account: userProfile.Account.Account, Role: userProfile.Account.Role}
+		for _, userProfile := range userProfiles {
+			var profile = apiModel.ResponseUserProfile{}
+			profile.ID = userProfile.ID.Hex()
+			profile.Info = apiModel.ResponseUserInfo(userProfile.Info)
+			profile.Account = apiModel.ResponseUserAccountNoPass{Account: userProfile.Account.Account, Role: userProfile.Account.Role}
+			response.UserProfiles = append(response.UserProfiles, profile)
 		}
 		return response, nil
 	}

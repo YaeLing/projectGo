@@ -23,7 +23,7 @@ func main() {
 	// - Credentials share
 	// - Preflight requests cached for 12 hours
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"https://foo.com"},
+		AllowOrigins:     []string{"https://foo.com"}, //指定允許訪問資源的來源
 		AllowMethods:     []string{"PUT", "PATCH"},
 		AllowHeaders:     []string{"Origin"},
 		ExposeHeaders:    []string{"Content-Length"},

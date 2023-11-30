@@ -3,7 +3,6 @@ package auth
 import (
 	"amenBack/dbService/userDBService"
 	"amenBack/model/authModel"
-	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -56,9 +55,8 @@ func GenerateToken(c *gin.Context) {
 			},
 		}
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-		tokenString, err := token.SignedString(jwtSecret)
-		fmt.Println(tokenString, err)
-		c.String(http.StatusAccepted, tokenString)
+		tokenString, _ := token.SignedString(jwtSecret)
+		c.String(http.StatusCreated, tokenString)
 	}
 }
 
@@ -81,10 +79,6 @@ func Authenticate(c *gin.Context) {
 	claims := token.Claims.(jwt.MapClaims)
 	userID := claims["userID"].(string)
 	role := claims["role"].(string)
-	if role != authModel.RoleAdmin {
-		c.AbortWithStatus(http.StatusForbidden)
-		return
-	}
 	c.Set("userID", userID)
 	c.Set("role", role)
 }

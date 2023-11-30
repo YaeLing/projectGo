@@ -74,7 +74,7 @@ func queryUserInfos(key string, value string) (apiModel.ResponseUserInfos, error
 
 func querySelfAccount(id string) (apiModel.ResponseUserAccount, error) {
 	var response apiModel.ResponseUserAccount
-	if results, err := userDBService.GetUserAccounts("_id", id); err != nil {
+	if results, err := userDBService.GetUserAccounts("id", id); err != nil {
 		errorMsg := errorMsgs[querySelfAccountFailed]
 		log.Println(errorMsg)
 		return response, errors.New(errorMsg)
@@ -97,7 +97,7 @@ func updateSelfInfo(id string, selfInfo apiModel.RequestUpdateUserInfo) error {
 }
 
 func updateSelfAccount(id string, selfAccount apiModel.RequestUpdateUserAccount) error {
-	if result, err := userDBService.GetUserAccounts("_id", id); err != nil {
+	if result, err := userDBService.GetUserAccounts("id", id); err != nil {
 		errorMsg := errorMsgs[updateSelfAccountFailed]
 		log.Println(errorMsg)
 		return errors.New(errorMsg)
