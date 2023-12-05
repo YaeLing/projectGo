@@ -14,7 +14,7 @@ import (
 // @Produce      json
 // @Param		 key   path  string  true	"Query key"
 // @Param		 value   path  string  true	"Query value"
-// @Success      200  string  "OK"
+// @Success      200  {object}   apiModel.ResponseUserProfiles   "User profiles"
 // @Failure      400  string  "Query user profile failed"
 // @Router       /admin/profile/{key}/{value} [GET]
 func QueryUserProfilesAPI(ctx *gin.Context) {

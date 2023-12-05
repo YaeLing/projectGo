@@ -23,9 +23,6 @@ func main() {
 func setupRoute() *gin.Engine {
 	// gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
-
-	router.GET("/auth/:userID", auth.GenerateToken)
-
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
@@ -34,7 +31,7 @@ func setupRoute() *gin.Engine {
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
-
+	router.GET("/auth/:userID", auth.GenerateToken)
 	userRouter := router.Group("/user")
 	userRouter.POST("/register", userService.RegisterAPI)
 	userRouter.Use(auth.Authenticate)

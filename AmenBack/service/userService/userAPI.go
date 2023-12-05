@@ -14,7 +14,7 @@ import (
 // @Accept		 json
 // @Produce      json
 // @Param		 Request body apiModel.RequestRegisterUser  true "User info"
-// @Success      200  {string}  string   "OK"
+// @Success      200  {object}  string   "UserID"
 // @Failure      400  string  "Register failed"
 // @Router       /user/register [POST]
 func RegisterAPI(ctx *gin.Context) {
@@ -23,11 +23,12 @@ func RegisterAPI(ctx *gin.Context) {
 		ctx.String(http.StatusBadRequest, err.Error())
 		return
 	}
-	if err := registerNewUser(newUser); err != nil {
+	if userID, err := registerNewUser(newUser); err != nil {
 		ctx.String(http.StatusBadRequest, err.Error())
 		return
 	} else {
-		ctx.String(http.StatusCreated, "OK")
+		response := apiModel.ResponseRegister{ID: userID}
+		ctx.JSON(http.StatusCreated, response)
 		return
 	}
 }

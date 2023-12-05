@@ -32,17 +32,17 @@ var errorMsgs = map[int]string{
 	deleteSelfProfileFailed: "Delete self profile failed.",
 }
 
-func registerNewUser(user apiModel.RequestRegisterUser) error {
+func registerNewUser(user apiModel.RequestRegisterUser) (string, error) {
 	if result, err := userDBService.GetUserAccounts("account", user.Account); err == nil { //if err == nil means account already exists
 		if len(result) > 0 {
 			errorMsg := errorMsgs[accountExist]
 			log.Println(errorMsg)
-			return errors.New(errorMsg)
+			return "", errors.New(errorMsg)
 		}
 	} else {
 		errorMsg := errorMsgs[createAccountFailed]
 		log.Println(errorMsg)
-		return errors.New(errorMsg)
+		return "", errors.New(errorMsg)
 	}
 	id := primitive.NewObjectID()
 	userAccount := dbModel.UserAccount{Account: user.Account, Password: user.Password, Role: "user"}
@@ -52,9 +52,9 @@ func registerNewUser(user apiModel.RequestRegisterUser) error {
 	if err := userDBService.CreateUserProfile(userProfile); err != nil {
 		errorMsg := errorMsgs[createAccountFailed]
 		log.Println(errorMsg)
-		return errors.New(errorMsg)
+		return "", errors.New(errorMsg)
 	}
-	return nil
+	return id.Hex(), nil
 }
 
 func queryUserInfos(key string, value string) (apiModel.ResponseUserInfos, error) {

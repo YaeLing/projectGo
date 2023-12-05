@@ -3,17 +3,26 @@ package dbUtils
 import (
 	"context"
 	"log"
+	"os"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var mongoURI = "mongodb://localhost:27017"
-
 var mgoCli *mongo.Client
+
+func getMongoURI() string {
+	uri := os.Getenv("MONGODB_URI")
+	if uri == "" {
+		return "mongodb://root:3345678@localhost:27017"
+	} else {
+		return uri
+	}
+}
 
 func initEngine() {
 	var err error
+	mongoURI := getMongoURI()
 	clientOptions := options.Client().ApplyURI(mongoURI)
 
 	// 連接mongoDB

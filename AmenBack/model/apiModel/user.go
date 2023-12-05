@@ -29,6 +29,10 @@ type RequestUpdateUserRole struct {
 	Role string `bson:"role,required"`
 }
 
+type ResponseRegister struct {
+	ID string `bson:"id,required"`
+}
+
 // ResponseUserInfo model info
 // @Description Response of user information
 type ResponseUserInfo struct {
